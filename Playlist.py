@@ -33,3 +33,5 @@ class Playlist:
         names_list = (item[len(self.directory):] for item in self.dirs_folders_list)
 
         self.dirs_folders_list = list(zip(self.dirs_folders_list, names_list))
+
+        print()
