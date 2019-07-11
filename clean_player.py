@@ -1,27 +1,34 @@
 import shutil
+from Playlist import Playlist
 
 
-def clean_player_folders(pc_dir, player_dir, pc_folder_list=None, player_folder_list=None):
+def clean_player_folders(player_playlist=None, pc_playlist=None):
     """
 
-    :param pc_folder_list:
-    :param player_folder_list:
+    :param player_playlist:
+    :param pc_playlist:
     :return:
     """
 
-    if pc_folder_list is None:
-        pc_folder_list = []
+    if pc_playlist is None:
+        pc_playlist = Playlist()
 
-    if player_folder_list is None:
-        player_folder_list =[]
+    if player_playlist is None:
+        player_playlist = Playlist()
 
-    for folder in player_folder_list:
-        if folder[len(player_dir)] in map(lambda item: item[len(pc_dir)], pc_folder_list):
+    pc_dir_list, pc_folder_list = zip(*pc_playlist.dirs_folders_list)
+    pc_dir_list, pc_folder_list = list(pc_dir_list), list(pc_folder_list)
+
+    for folder in player_playlist.dirs_folders_list:
+        if folder[1] in pc_folder_list:
             pass
 
-        elif folder[len(player_dir)] not in map(lambda item: item[len(pc_dir)], pc_folder_list):
+        elif folder[1] not in pc_folder_list:
             print(f'we will delete{folder}')
 
             shutil.rmtree(folder)
+            folder = 'clear'
         else:
             print('we have a problem bitch')
+
+    player_playlist.dirs_folders_list = list(filter(lambda item: item != 'clear', player_playlist.dirs_folders_list))

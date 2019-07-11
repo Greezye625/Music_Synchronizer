@@ -1,4 +1,4 @@
-from get_folder_list import get_folder_list
+# from get_folder_list import get_folder_list
 from clean_player import *
 from  Playlist import Playlist
 from functions import *
@@ -16,13 +16,14 @@ def main():
 
     # Linux directories
 
-    # pc_folder_list = get_folder_list(pc_dir)
-    # player_folder_list = get_folder_list(player_dir)
 
     pc_playlist = Playlist(pc_dir)
-
     pc_playlist.get_folder_list()
 
+    player_playlist = Playlist(player_dir)
+    player_playlist.get_folder_list()
+
+    clean_player_folders(pc_playlist, player_playlist)
     # testx = pc_folder_list[3][len(pc_dir):]
     # print(testx)
     #
