@@ -16,12 +16,9 @@ def main():
 
     # Linux directories
 
-
     pc_playlist = Playlist(pc_dir)
-    pc_playlist.get_folder_list()
 
     player_playlist = Playlist(player_dir)
-    player_playlist.get_folder_list()
 
     clean_player_folders(pc_playlist, player_playlist)
     # testx = pc_folder_list[3][len(pc_dir):]

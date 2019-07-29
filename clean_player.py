@@ -17,12 +17,12 @@ def clean_player_folders(pc_playlist=None, player_playlist=None):
     if player_playlist is None:
         player_playlist = Playlist()
 
-    pc_dir_list, pc_folder_list = zip(*pc_playlist.dirs_folders_list)
-    pc_dir_list, pc_folder_list = list(pc_dir_list), list(pc_folder_list)
+    pc_dir_list, pc_folder_list, pc_parent_list = zip(*pc_playlist.dirs_folders_parents_list)
+    pc_dir_list, pc_folder_list, pc_parent_list = list(pc_dir_list), list(pc_folder_list), list(pc_parent_list)
 
     pc_curr_folder_song_list = []
 
-    for folder in player_playlist.dirs_folders_list:
+    for folder in player_playlist.dirs_folders_parents_list:
         if folder[1] in pc_folder_list:
 
             for pc_root, pc_dirs, pc_files in os.walk(pc_playlist.directory + folder[1]):
@@ -35,17 +35,17 @@ def clean_player_folders(pc_playlist=None, player_playlist=None):
                         shutil.rmtree(os.path.join(root, name))
 
         elif folder[1] not in pc_folder_list:
-            parent = "/".join(folder[0].split("/")[:-1])
 
-            root, dirs, files = os.walk(parent)
+            root, dirs, files = os.walk(folder[2])
 
             if not dirs and not files:
-                shutil.rmtree(parent)
+                shutil.rmtree(folder[2])
             else:
                 shutil.rmtree(folder[0])
             folder = 'clear'
         else:
             print('we have a problem bitch')
 
-    player_playlist.dirs_folders_list = list(filter(lambda item: item != 'clear', player_playlist.dirs_folders_list))
+    player_playlist.dirs_folders_parents_list = list(
+        filter(lambda item: item != 'clear', player_playlist.dirs_folders_parents_list))
     print()
