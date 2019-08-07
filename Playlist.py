@@ -2,12 +2,20 @@ import os
 
 
 class Playlist:
-    def __init__(self, directory='', dirs_folders_list=None):
-        if dirs_folders_list is None:
-            dirs_folders_list = []
+    """
+    Class Containing information about Playlist
+
+    dirs_folders_parents_list stores lowest folders (folders containg only auido files, without any child folders)
+    dirs_folders_parents_list contains items(tuples) containing 3 values:
+        - item[0] => full directory to folder
+        - item[1] => directory to folder relative to Playlist directory; two folders with
+                     the same name and location in copies of the same playlist will have these values identical
+        - item[2] => directory to parent of the folder
+    """
+    def __init__(self, directory=''):
 
         self.directory = directory
-        self.dirs_folders_parents_list = dirs_folders_list
+        self.dirs_folders_parents_list = []
 
         self.get_folder_list()
 
@@ -26,11 +34,13 @@ class Playlist:
 
         self.dirs_folders_parents_list.sort()
 
-        # when list of folders is sorted, parent directories
-        # can be discovered and deleted by checking if next
-        # position on the list contains the entirety of
-        # current position. Then marking parent directory
-        # for deletion
+        """
+        when list of folders is sorted, parent directories
+        can be discovered and deleted by checking if next
+        position on the list contains the entirety of
+        current position. Then marking parent directory
+        for deletion
+        """
         for index in range(len(self.dirs_folders_parents_list) - 1):
             if self.dirs_folders_parents_list[index + 1].startswith(self.dirs_folders_parents_list[index]):
                 self.dirs_folders_parents_list[index] = 'clear'
