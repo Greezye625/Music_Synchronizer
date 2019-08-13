@@ -47,26 +47,61 @@ def delete_folders_not_in_pc_playlist(folder: tuple):
     len(dirs) == 0 shouldn't ever happen, but left for safety
     
     """
-    def check_upper_folder(parent: str):
-        upper_folder = '/'.join(parent.split('/')[:-1])
-        for _, dirs, _ in os.walk(upper_folder):
-            dirs = dirs
-            break
-        print()
 
-        if len(dirs) in (0, 1):
+    def check_upper_folder(parent: str):
+        """
+        recursive func to check folders up the directory tree, used to delete highest parent directory
+        instead of child directory, if child directory is the only content.
+
+        e.g
+
+        parent_folder
+              |
+              |--child_folder_1
+              |       |
+              |       |--child_folder_2
+              |               |
+              |               |--child_folder_3
+              |
+              |--child_folder_4
+
+
+        if folder that needed to be deleted was child_folder_3, then instead child_folder_1 would be deleted
+        (with all it's children)
+        :param parent:
+        :return:
+        """
+        upper_folder = '/'.join(parent.split('/')[:-1])
+
+        directories = None
+        for _, directories, _ in os.walk(upper_folder):
+            directories = directories
+            break
+
+        if directories is None:
+            raise Exception(f'directory not found in {upper_folder}\n')
+
+        if len(directories) == 1:
             check_upper_folder(upper_folder)
+        elif len(directories) == 0:
+            raise Exception(f'directories not found in {upper_folder}')
         else:
             shutil.rmtree(parent)
 
+    dirs = None
     for _, dirs, _ in os.walk(folder[2]):
         dirs = dirs
         break
 
-    if len(dirs) in (0, 1):
+    if dirs is None:
+        raise Exception(f'directory not found in {folder[2]}')
+
+    if len(dirs) == 1:
         check_upper_folder(folder[2])
+    elif len(dirs) == 0:
+        raise Exception(f'directories not found in {folder[2]}')
     else:
-        shutil.rmtree(folder[0])            # removing just the investigated PLAYER folder
+        shutil.rmtree(folder[0])  # removing just the investigated PLAYER folder
 
 
 def clean_player_folders(pc_playlist=None, player_playlist=None):
@@ -89,7 +124,7 @@ def clean_player_folders(pc_playlist=None, player_playlist=None):
     pc_dir_list, pc_folder_list, pc_parent_list = zip(*pc_playlist.dirs_folders_parents_list)
     pc_dir_list, pc_folder_list, pc_parent_list = list(pc_dir_list), list(pc_folder_list), list(pc_parent_list)
 
-    pc_curr_folder_song_list = []           # list containing names of files in folder currently looked into
+    pc_curr_folder_song_list = []  # list containing names of files in folder currently looked into
 
     """
     in dirs_folders_parents_list:
@@ -98,21 +133,20 @@ def clean_player_folders(pc_playlist=None, player_playlist=None):
                 corresponding folders in the PC and PLAYER Playlists will have this value identical
     folder[2] = Parent folder of the current folder
     """
-    for folder in player_playlist.dirs_folders_parents_list:
+    for index, folder in enumerate(player_playlist.dirs_folders_parents_list):
 
-        if folder[1] in pc_folder_list:             # if folder from PLAYER is in playlist on PC
+        if folder[1] in pc_folder_list:  # if folder from PLAYER is in playlist on PC
             delete_files_not_in_pc_playlist(folder=folder,
                                             pc_playlist=pc_playlist,
                                             pc_curr_folder_song_list=pc_curr_folder_song_list)
 
-        elif folder[1] not in pc_folder_list:       # if folder from PLAYER is not in playlist on PC
+        elif folder[1] not in pc_folder_list:  # if folder from PLAYER is not in playlist on PC
             delete_folders_not_in_pc_playlist(folder)
-            folder = 'clear'                        # marking folder for removal
+            player_playlist.dirs_folders_parents_list[index] = 'clear'  # marking folder for removal
 
         else:
-            print('we have a problem bitch')        # just a failsafe
+            print('we have a problem bitch')  # just a failsafe
 
     # filtering out folders marked for removal and saving to dirs_folders_parents_list
     player_playlist.dirs_folders_parents_list = list(
-            filter(lambda item: item != 'clear', player_playlist.dirs_folders_parents_list))
-    print()
+        filter(lambda item: item != 'clear', player_playlist.dirs_folders_parents_list))
