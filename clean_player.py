@@ -41,17 +41,32 @@ def delete_folders_not_in_pc_playlist(folder: tuple):
     if folder is None:
         raise Exception('arg not delivered to delete_folders_not_in_pc_playlist function in clean_player.py')
 
-    # creating list of directories in PARENT FOLDER
-    # of the currently investigated PLAYER FOLDER
-    root, dirs, files = os.walk(folder[2])
+    """
+    if parent of the folder has only one directory in it, then it's folder we're about to delete,
+    so deleting Parent folder will achieve the same goal, and not leave empty parent folder.
+    len(dirs) == 0 shouldn't ever happen, but left for safety
+    
+    """
+    def check_upper_folder(parent: str):
+        upper_folder = '/'.join(parent.split('/')[:-1])
+        for _, dirs, _ in os.walk(upper_folder):
+            dirs = dirs
+            break
+        print()
 
-    # if parent of the folder has only one directory in it, then it's folder we're about to delete,
-    # so deleting Parent folder will achieve the same goal, and not leave empty parent folder.
-    # len(dirs) == 0 shouldn't ever happen, but left for safety
+        if len(dirs) in (0, 1):
+            check_upper_folder(upper_folder)
+        else:
+            shutil.rmtree(parent)
+
+    for _, dirs, _ in os.walk(folder[2]):
+        dirs = dirs
+        break
+
     if len(dirs) in (0, 1):
-        shutil.rmtree(folder[2])  # removing Parent Folder
+        check_upper_folder(folder[2])
     else:
-        shutil.rmtree(folder[0])  # removing just the investigated PLAYER folder
+        shutil.rmtree(folder[0])            # removing just the investigated PLAYER folder
 
 
 def clean_player_folders(pc_playlist=None, player_playlist=None):
@@ -74,7 +89,7 @@ def clean_player_folders(pc_playlist=None, player_playlist=None):
     pc_dir_list, pc_folder_list, pc_parent_list = zip(*pc_playlist.dirs_folders_parents_list)
     pc_dir_list, pc_folder_list, pc_parent_list = list(pc_dir_list), list(pc_folder_list), list(pc_parent_list)
 
-    pc_curr_folder_song_list = []  # list containing names of files in folder currently looked into
+    pc_curr_folder_song_list = []           # list containing names of files in folder currently looked into
 
     """
     in dirs_folders_parents_list:
@@ -92,11 +107,12 @@ def clean_player_folders(pc_playlist=None, player_playlist=None):
 
         elif folder[1] not in pc_folder_list:       # if folder from PLAYER is not in playlist on PC
             delete_folders_not_in_pc_playlist(folder)
-            folder = 'clear'  # marking folder for removal
+            folder = 'clear'                        # marking folder for removal
 
         else:
-            print('we have a problem bitch')  # just a failsafe
+            print('we have a problem bitch')        # just a failsafe
 
     # filtering out folders marked for removal and saving to dirs_folders_parents_list
     player_playlist.dirs_folders_parents_list = list(
             filter(lambda item: item != 'clear', player_playlist.dirs_folders_parents_list))
+    print()
