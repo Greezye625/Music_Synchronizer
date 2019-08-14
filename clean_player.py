@@ -128,7 +128,7 @@ def clean_player_folders(pc_playlist=None, player_playlist=None):
     """
     in dirs_folders_parents_list:
     folder[0] = whole directory of current folder
-    folder[1] = folder direcotry excluding directory of the playlist
+    folder[1] = folder direcotry excluding directory of the playlist.
                 corresponding folders in the PC and PLAYER Playlists will have this value identical
     folder[2] = Parent folder of the current folder
     """

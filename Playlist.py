@@ -3,7 +3,7 @@ import os
 
 class Playlist:
     """
-    Class Containing information about Playlist
+    Class Containing information about Playlist.
 
     dirs_folders_parents_list stores lowest folders (folders containg only auido files, without any child folders)
     dirs_folders_parents_list contains items(tuples) containing 3 values:

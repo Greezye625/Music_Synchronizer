@@ -25,8 +25,8 @@ def main():
 
     # copy_music_to_player(pc_playlist, player_playlist)
 
-    shutil.copytree('/Users/jsobi/Python/Music_Synchronizer/Disk1/Playlist/artist2',
-                    '/Users/jsobi/Python/Music_Synchronizer/Disk2/Playlist/artist2')
+    #shutil.copytree('/Users/jsobi/Python/Music_Synchronizer/Disk1/Playlist/artist2',
+    #                '/Users/jsobi/Python/Music_Synchronizer/Disk2/Playlist/artist2')
 
     # testx = pc_folder_list[3][len(pc_dir):]
     # print(testx)

@@ -9,7 +9,7 @@ def copy_folders_not_on_player(folder: tuple, pc_playlist=None, player_playlist=
     if player_playlist is None:
         player_playlist = Playlist()
 
-    shutil.copytree(folder[0], os.path.join(player_playlist.directory, folder[1]))
+    #shutil.copytree(folder[0], os.path.join(player_playlist.directory, folder[1]))
 
 
 def copy_files_not_on_player():
