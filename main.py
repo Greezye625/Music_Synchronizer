@@ -21,7 +21,6 @@ def main():
 
     clean_player_folders(pc_playlist, player_playlist)
 
-
     # testx = pc_folder_list[3][len(pc_dir):]
     # print(testx)
     #

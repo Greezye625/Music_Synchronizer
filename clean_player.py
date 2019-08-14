@@ -26,7 +26,7 @@ def delete_files_not_in_pc_playlist(folder: tuple, pc_playlist: Playlist, pc_cur
     for root, _, files in os.walk(folder[0]):
         for name in files:
             if name not in pc_curr_folder_song_list:
-                shutil.rmtree(os.path.join(root, name))
+                os.remove(os.path.join(root, name))
 
 
 def delete_folders_not_in_pc_playlist(folder: tuple):
@@ -38,16 +38,6 @@ def delete_folders_not_in_pc_playlist(folder: tuple):
     :param folder: tup
     :return:
     """
-    if folder is None:
-        raise Exception('arg not delivered to delete_folders_not_in_pc_playlist function in clean_player.py')
-
-    """
-    if parent of the folder has only one directory in it, then it's folder we're about to delete,
-    so deleting Parent folder will achieve the same goal, and not leave empty parent folder.
-    len(dirs) == 0 shouldn't ever happen, but left for safety
-    
-    """
-
     def check_upper_folder(parent: str):
         """
         recursive func to check folders up the directory tree, used to delete highest parent directory
@@ -71,6 +61,7 @@ def delete_folders_not_in_pc_playlist(folder: tuple):
         :param parent:
         :return:
         """
+
         upper_folder = '/'.join(parent.split('/')[:-1])
 
         directories = None
@@ -88,6 +79,9 @@ def delete_folders_not_in_pc_playlist(folder: tuple):
         else:
             shutil.rmtree(parent)
 
+    if folder is None:
+        raise Exception('arg not delivered to delete_folders_not_in_pc_playlist function in clean_player.py')
+
     dirs = None
     for _, dirs, _ in os.walk(folder[2]):
         dirs = dirs
@@ -96,6 +90,11 @@ def delete_folders_not_in_pc_playlist(folder: tuple):
     if dirs is None:
         raise Exception(f'directory not found in {folder[2]}')
 
+    """
+    if parent of the folder has only one directory in it, then it's folder we're about to delete,
+    so deleting Parent folder will achieve the same goal, and not leave empty parent folder.
+    len(dirs) == 0 shouldn't ever happen, but left for safety
+    """
     if len(dirs) == 1:
         check_upper_folder(folder[2])
     elif len(dirs) == 0:
@@ -135,17 +134,14 @@ def clean_player_folders(pc_playlist=None, player_playlist=None):
     """
     for index, folder in enumerate(player_playlist.dirs_folders_parents_list):
 
-        if folder[1] in pc_folder_list:  # if folder from PLAYER is in playlist on PC
+        if folder[1] in pc_folder_list:                     # if folder from PLAYER is in playlist on PC
             delete_files_not_in_pc_playlist(folder=folder,
                                             pc_playlist=pc_playlist,
                                             pc_curr_folder_song_list=pc_curr_folder_song_list)
 
-        elif folder[1] not in pc_folder_list:  # if folder from PLAYER is not in playlist on PC
+        else:           # if folder from PLAYER is not in playlist on PC
             delete_folders_not_in_pc_playlist(folder)
             player_playlist.dirs_folders_parents_list[index] = 'clear'  # marking folder for removal
-
-        else:
-            print('we have a problem bitch')  # just a failsafe
 
     # filtering out folders marked for removal and saving to dirs_folders_parents_list
     player_playlist.dirs_folders_parents_list = list(
