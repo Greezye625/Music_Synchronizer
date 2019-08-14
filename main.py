@@ -1,6 +1,8 @@
 from clean_player import *
+from copy_to_player import *
 from Playlist import Playlist
 from sexy_fun import *
+import shutil
 
 
 def main():
@@ -19,7 +21,12 @@ def main():
 
     player_playlist = Playlist(player_dir)
 
-    clean_player_folders(pc_playlist, player_playlist)
+    # clean_player_folders(pc_playlist, player_playlist)
+
+    # copy_music_to_player(pc_playlist, player_playlist)
+
+    shutil.copytree('/Users/jsobi/Python/Music_Synchronizer/Disk1/Playlist/artist2',
+                    '/Users/jsobi/Python/Music_Synchronizer/Disk2/Playlist/artist2')
 
     # testx = pc_folder_list[3][len(pc_dir):]
     # print(testx)
