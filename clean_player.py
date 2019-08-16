@@ -3,21 +3,22 @@ from Playlist import Playlist
 import os
 
 
-def delete_files_not_in_pc_playlist(folder: tuple, pc_playlist: Playlist, pc_curr_folder_song_list: list):
+def delete_files_not_in_pc_playlist(folder: tuple, pc_playlist: Playlist):
     """
     If twin folder is found on PC Playlist, Player folder contents are checked against
     the contents of PC folder, files existing on Player but not on PC are removed
 
     :param folder:
     :param pc_playlist:
-    :param pc_curr_folder_song_list:
     :return:
     """
-    if None in (folder, pc_playlist, pc_curr_folder_song_list):
+    if None in (folder, pc_playlist):
         raise Exception('arg not delivered to delete_files_not_in_pc_playlist function in clean_player.py')
 
+    pc_curr_folder_song_list = []       # list containing names of files in folder currently looked into
+
     # creating list of songs in PC twin of currently investigated Player folder
-    for pc_root, pc_dirs, pc_files in os.walk(pc_playlist.directory + folder[1]):
+    for _, _, pc_files in os.walk(pc_playlist.directory + folder[1]):
         for name in pc_files:
             pc_curr_folder_song_list.append(name)
 
@@ -120,10 +121,9 @@ def clean_player_folders(pc_playlist=None, player_playlist=None):
         player_playlist = Playlist()
 
     # unziping dirs_folders_parents_list into seperate lists for every data
-    pc_dir_list, pc_folder_list, pc_parent_list = zip(*pc_playlist.dirs_folders_parents_list)
-    pc_dir_list, pc_folder_list, pc_parent_list = list(pc_dir_list), list(pc_folder_list), list(pc_parent_list)
-
-    pc_curr_folder_song_list = []  # list containing names of files in folder currently looked into
+    # but we're only interested in folder list
+    _, pc_folder_list, _ = zip(*pc_playlist.dirs_folders_parents_list)
+    pc_folder_list = list(pc_folder_list)
 
     """
     in dirs_folders_parents_list:
@@ -136,8 +136,7 @@ def clean_player_folders(pc_playlist=None, player_playlist=None):
 
         if folder[1] in pc_folder_list:                     # if folder from PLAYER is in playlist on PC
             delete_files_not_in_pc_playlist(folder=folder,
-                                            pc_playlist=pc_playlist,
-                                            pc_curr_folder_song_list=pc_curr_folder_song_list)
+                                            pc_playlist=pc_playlist)
 
         else:           # if folder from PLAYER is not in playlist on PC
             delete_folders_not_in_pc_playlist(folder)
