@@ -1,9 +1,10 @@
 import shutil
 from Playlist import Playlist
 import os
+from Location import Location
 
 
-def delete_files_not_in_pc_playlist(folder: tuple, pc_playlist: Playlist):
+def delete_files_not_in_pc_playlist(folder: Location, pc_playlist: Playlist):
     """
     If twin folder is found on PC Playlist, Player folder contents are checked against
     the contents of PC folder, files existing on Player but not on PC are removed
@@ -18,19 +19,19 @@ def delete_files_not_in_pc_playlist(folder: tuple, pc_playlist: Playlist):
     pc_curr_folder_song_list = []       # list containing names of files in folder currently looked into
 
     # creating list of songs in PC twin of currently investigated Player folder
-    for _, _, pc_files in os.walk(pc_playlist.directory + folder[1]):
+    for _, _, pc_files in os.walk(pc_playlist.directory + folder.relative_path):
         for name in pc_files:
             pc_curr_folder_song_list.append(name)
 
     # checking and deleting file from currently investigated PLAYER folder,
     # if it's not in corresponding PC folder
-    for root, _, files in os.walk(folder[0]):
+    for root, _, files in os.walk(folder.full_path):
         for name in files:
             if name not in pc_curr_folder_song_list:
                 os.remove(os.path.join(root, name))
 
 
-def delete_folders_not_in_pc_playlist(folder: tuple):
+def delete_folders_not_in_pc_playlist(folder: Location):
     """
     If twin folder is not found on PC Playlist, folder gets deleted from the Player.
     Addidtionally, check is performed to veryfy if deleted folder is the last one in it's parent
@@ -84,12 +85,12 @@ def delete_folders_not_in_pc_playlist(folder: tuple):
         raise Exception('arg not delivered to delete_folders_not_in_pc_playlist function in clean_player.py')
 
     dirs = None
-    for _, dirs, _ in os.walk(folder[2]):
+    for _, dirs, _ in os.walk(folder.parent_directory):
         dirs = dirs
         break
 
     if dirs is None:
-        raise Exception(f'directory not found in {folder[2]}')
+        raise Exception(f'directory not found in {folder.parent_directory}')
 
     """
     if parent of the folder has only one directory in it, then it's folder we're about to delete,
@@ -97,14 +98,14 @@ def delete_folders_not_in_pc_playlist(folder: tuple):
     len(dirs) == 0 shouldn't ever happen, but left for safety
     """
     if len(dirs) == 1:
-        check_upper_folder(folder[2])
+        check_upper_folder(folder.parent_directory)
     elif len(dirs) == 0:
-        raise Exception(f'directories not found in {folder[2]}')
+        raise Exception(f'directories not found in {folder.parent_directory}')
     else:
-        shutil.rmtree(folder[0])  # removing just the investigated PLAYER folder
+        shutil.rmtree(folder.full_path)  # removing just the investigated PLAYER folder
 
 
-def clean_player_folders(pc_playlist=None, player_playlist=None):
+def clean_player_folders(pc_playlist: Playlist, player_playlist: Playlist):
     """
     Function removes files and folders from player, that are non existent
     in playlist on PC
@@ -114,16 +115,7 @@ def clean_player_folders(pc_playlist=None, player_playlist=None):
     :return:
     """
 
-    if pc_playlist is None:
-        pc_playlist = Playlist()
-
-    if player_playlist is None:
-        player_playlist = Playlist()
-
-    # unziping dirs_folders_parents_list into seperate lists for every data
-    # but we're only interested in folder list
-    _, pc_folder_list, _ = zip(*pc_playlist.dirs_folders_parents_list)
-    pc_folder_list = list(pc_folder_list)
+    pc_folder_list = list(item.relative_path for item in pc_playlist.locations_list)
 
     """
     in dirs_folders_parents_list:
@@ -132,16 +124,16 @@ def clean_player_folders(pc_playlist=None, player_playlist=None):
                 corresponding folders in the PC and PLAYER Playlists will have this value identical
     folder[2] = Parent folder of the current folder
     """
-    for index, folder in enumerate(player_playlist.dirs_folders_parents_list):
+    for index, folder in enumerate(player_playlist.locations_list):
 
-        if folder[1] in pc_folder_list:                     # if folder from PLAYER is in playlist on PC
+        if folder.relative_path in pc_folder_list:                     # if folder from PLAYER is in playlist on PC
             delete_files_not_in_pc_playlist(folder=folder,
                                             pc_playlist=pc_playlist)
 
         else:           # if folder from PLAYER is not in playlist on PC
             delete_folders_not_in_pc_playlist(folder)
-            player_playlist.dirs_folders_parents_list[index] = 'clear'  # marking folder for removal
+            player_playlist.locations_list[index] = 'clear'  # marking folder for removal
 
     # filtering out folders marked for removal and saving to dirs_folders_parents_list
-    player_playlist.dirs_folders_parents_list = list(
-        filter(lambda item: item != 'clear', player_playlist.dirs_folders_parents_list))
+    player_playlist.locations_list = list(
+        filter(lambda item: item != 'clear', player_playlist.locations_list))

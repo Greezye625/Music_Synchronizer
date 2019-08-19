@@ -1,21 +1,16 @@
 import os
+from Location import Location
 
 
 class Playlist:
     """
     Class Containing information about Playlist.
-
-    dirs_folders_parents_list stores lowest folders (folders containg only auido files, without any child folders)
-    dirs_folders_parents_list contains items(tuples) containing 3 values:
-        - item[0] => full directory to folder
-        - item[1] => directory to folder relative to Playlist directory; two folders with
-                     the same name and location in copies of the same playlist will have these values identical
-        - item[2] => directory to parent of the folder
     """
+
     def __init__(self, directory=''):
 
         self.directory = directory
-        self.dirs_folders_parents_list = []
+        self.locations_list = []
 
         self.get_folder_list()
 
@@ -30,9 +25,9 @@ class Playlist:
 
         for root, dirs, files in os.walk(self.directory):  # searching tree with root in 'directory'
             for name in dirs:  # creating list of folders and subfolders
-                self.dirs_folders_parents_list.append(os.path.join(root, name))  #
+                self.locations_list.append(os.path.join(root, name))  #
 
-        self.dirs_folders_parents_list.sort()
+        self.locations_list.sort()
 
         """
         when list of folders is sorted, parent directories
@@ -41,19 +36,21 @@ class Playlist:
         current position. Then marking parent directory
         for deletion
         """
-        for index in range(len(self.dirs_folders_parents_list) - 1):
-            if self.dirs_folders_parents_list[index + 1].startswith(self.dirs_folders_parents_list[index]):
-                self.dirs_folders_parents_list[index] = 'clear'
+        for index in range(len(self.locations_list) - 1):
+            if self.locations_list[index + 1].startswith(self.locations_list[index]):
+                self.locations_list[index] = 'clear'
 
-        self.dirs_folders_parents_list = list(
-            (filter(lambda element: element != 'clear', self.dirs_folders_parents_list)))  # erasing marked positions
+        self.locations_list = list(
+            (filter(lambda element: element != 'clear', self.locations_list)))  # erasing marked positions
 
         # creating list of folder names excluding playlist location
         # e.g. /home/user/playlist/artist/album_xyz will result in name "/artist/album_xyz"
-        names_list = (item[len(self.directory):] for item in self.dirs_folders_parents_list)
+        names_list = (item[len(self.directory)+1:] for item in self.locations_list)
 
         # creating list of parent directories for every position
-        parents_list = ('/'.join(item.split('/')[:-1]) for item in self.dirs_folders_parents_list)
+        parents_list = ('/'.join(item.split('/')[:-1]) for item in self.locations_list)
 
         # zipping together to create list of tuples (directory,name, parent)
-        self.dirs_folders_parents_list = list(zip(self.dirs_folders_parents_list, names_list, parents_list))
+        self.locations_list = list(zip(self.locations_list, names_list, parents_list))
+        self.locations_list = list(Location(item[0], item[1], item[2]) for item in
+                                   self.locations_list)
