@@ -1,6 +1,31 @@
 import os
 import shutil
 import Location
+import os
+from sexy_fun import get_script_location
+
+
+def login():
+
+    try:
+        with open(os.path.join(get_script_location(), 'Pc_Playlist_Location'), mode='r')as file:
+            pc_dir = file.read()
+        print(f"current Pc Playlist location: {pc_dir}\n")
+
+        change = input(f"current Pc Playlist Location is:  '{pc_dir}'\n"
+                       f"do you want to change it? [Y/n]")
+        if change == 'Y':
+            pc_dir = input('Drag and drop playlist folder from your PC:\n')
+    except:
+        print(f"Pc Playlist location not set")
+        pc_dir = input('Drag and drop playlist folder from your PC:\n')
+    finally:
+        with open(os.path.join(get_script_location(), 'Pc_Playlist_Location'), mode='w')as file:
+            file.write(pc_dir)
+
+    player_dir = input('Drag and drop playlist folder from your player:\n')
+
+    return pc_dir, player_dir
 
 
 def get_parent_directory(path: str):
