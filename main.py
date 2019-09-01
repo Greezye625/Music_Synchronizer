@@ -1,7 +1,9 @@
 from clean_player import *
 from copy_to_player import *
 from Playlist import Playlist
-from sexy_fun import *
+
+
+# from sexy_fun import *
 
 
 def main():
@@ -9,12 +11,12 @@ def main():
     # player_dir = input('Drag and drop playlist folder from your player:\n')
 
     # Mac directories
-    pc_dir = '/Users/jsobi/Python/Music_Synchronizer/Disk1/Playlist'
-    player_dir = '/Users/jsobi/Python/Music_Synchronizer/Disk2/Playlist'
+    # pc_dir = '/Users/jsobi/Python/Music_Synchronizer/Disk1/Playlist'
+    # player_dir = '/Users/jsobi/Python/Music_Synchronizer/Disk2/Playlist'
 
     # Linux directories
-    # pc_dir = '/home/greezye/Greezye/TEST/Disk1/Playlist'
-    # player_dir = '/home/greezye/Greezye/TEST/Disk2/Playlist'
+    pc_dir = '/home/greezye/Greezye/TEST/Disk1/Playlist'
+    player_dir = '/home/greezye/Greezye/TEST/Disk2/Playlist'
 
     pc_playlist = Playlist(pc_dir)
 
@@ -24,8 +26,6 @@ def main():
 
     copy_music_to_player(pc_playlist=pc_playlist,
                          player_playlist=player_playlist)
-
-
 
 
 if __name__ == '__main__':
