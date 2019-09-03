@@ -21,10 +21,18 @@ def main():
 
     player_playlist = Playlist(player_dir)
 
+    print("----------------CLEANING PLAYLIST----------------")
+
     clean_player_folders(pc_playlist, player_playlist)
+
+    cls()
+
+    print("----------------SYNCING PLAYLIST----------------")
 
     copy_music_to_player(pc_playlist=pc_playlist,
                          player_playlist=player_playlist)
+
+    cls()
 
 
 if __name__ == '__main__':

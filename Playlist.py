@@ -44,5 +44,4 @@ class Playlist:
                 (filter(lambda element: element != 'clear', self.locations_list)))  # erasing marked positions
 
         self.locations_list = list(Location(full_path=item,
-                                            main_directory=self.directory)
-                                   for item in self.locations_list)
+                                            main_directory=self.directory) for item in self.locations_list)

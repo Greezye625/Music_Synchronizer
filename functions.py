@@ -2,7 +2,8 @@ import re
 import shutil
 import Location
 import os
-from sexy_fun import get_script_location
+from sexy_fun import (get_script_location,
+                      cls)
 
 
 def login():
@@ -24,10 +25,12 @@ def login():
     finally:
         with open(os.path.join(get_script_location(), 'Pc_Playlist_Location'), mode='w')as file:
             file.write(pc_dir)
-
+    cls()
     player_dir = input('Drag and drop playlist folder from your player:\n')
+
     match = pattern.search(player_dir)
     player_dir = match.group()
+
     return pc_dir, player_dir
 
 
