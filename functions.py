@@ -1,4 +1,4 @@
-import os
+import re
 import shutil
 import Location
 import os
@@ -6,16 +6,18 @@ from sexy_fun import get_script_location
 
 
 def login():
-
+    pc_dir = ''
+    pattern = re.compile(r"(/\w+)+")
     try:
         with open(os.path.join(get_script_location(), 'Pc_Playlist_Location'), mode='r')as file:
             pc_dir = file.read()
-        print(f"current Pc Playlist location: {pc_dir}\n")
 
-        change = input(f"current Pc Playlist Location is:  '{pc_dir}'\n"
+        change = input(f"current Pc Playlist Location is:  {pc_dir}\n"
                        f"do you want to change it? [Y/n]")
         if change == 'Y':
             pc_dir = input('Drag and drop playlist folder from your PC:\n')
+        match = pattern.search(pc_dir)
+        pc_dir = match.group()
     except:
         print(f"Pc Playlist location not set")
         pc_dir = input('Drag and drop playlist folder from your PC:\n')
@@ -24,7 +26,8 @@ def login():
             file.write(pc_dir)
 
     player_dir = input('Drag and drop playlist folder from your player:\n')
-
+    match = pattern.search(player_dir)
+    player_dir = match.group()
     return pc_dir, player_dir
 
 
