@@ -8,9 +8,9 @@ from sexy_fun import (get_script_location,
 
 def login():
     pc_dir = ''
-    pattern = re.compile(r"(/\w+)+")
+    pattern = re.compile(r"({}\w+)+".format(os.path.sep))
     try:
-        with open(os.path.join(get_script_location(), 'Pc_Playlist_Location'), mode='r')as file:
+        with open(os.path.join(get_script_location(), 'Pc_Playlist_Location.txt'), mode='r')as file:
             pc_dir = file.read()
 
         change = input(f"current Pc Playlist Location is:  {pc_dir}\n"
@@ -19,11 +19,11 @@ def login():
             pc_dir = input('Drag and drop playlist folder from your PC:\n')
         match = pattern.search(pc_dir)
         pc_dir = match.group()
-    except:
+    except IOError:
         print(f"Pc Playlist location not set")
         pc_dir = input('Drag and drop playlist folder from your PC:\n')
     finally:
-        with open(os.path.join(get_script_location(), 'Pc_Playlist_Location'), mode='w')as file:
+        with open(os.path.join(get_script_location(), 'Pc_Playlist_Location.txt'), mode='w')as file:
             file.write(pc_dir)
     cls()
     player_dir = input('Drag and drop playlist folder from your player:\n')

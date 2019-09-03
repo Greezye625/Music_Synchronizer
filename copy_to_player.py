@@ -91,12 +91,14 @@ def copy_files_not_on_player(pc_folder: Location, player_playlist: Playlist):
     # creating list of songs in Player twin of currently investigated PC Playlist folder
     for _, _, player_files in os.walk(os.path.join(player_playlist.directory, pc_folder.relative_path)):
         for name in player_files:
+
             player_curr_folder_song_list.append(name)
 
     # copying music files to album folder on Player
     for root, _, files in os.walk(pc_folder.full_path):
         for name in files:
             if name not in player_curr_folder_song_list:
+
                 player_folder = Location(full_path=os.path.join(player_playlist.directory,
                                                                 pc_folder.relative_path),
                                          main_directory=player_playlist.directory)

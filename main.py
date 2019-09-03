@@ -6,14 +6,6 @@ from sexy_fun import cls
 
 
 def main():
-    # Mac directories
-    # pc_dir = '/Users/jsobi/Python/Music_Synchronizer/Disk1/Playlist'
-    # player_dir = '/Users/jsobi/Python/Music_Synchronizer/Disk2/Playlist'
-
-    # Linux directories
-    pc_dir = '/home/greezye/Greezye/TEST/Disk1/Playlist'
-    player_dir = '/home/greezye/Greezye/TEST/Disk2/Playlist'
-
     pc_dir, player_dir = login()
     cls()
 
