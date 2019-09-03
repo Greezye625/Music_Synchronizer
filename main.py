@@ -1,15 +1,11 @@
 from clean_player import *
 from copy_to_player import *
 from Playlist import Playlist
-
-
-# from sexy_fun import *
+from functions import login
+from sexy_fun import cls
 
 
 def main():
-    # pc_dir = input('Drag and drop playlist folder from your PC:\n')
-    # player_dir = input('Drag and drop playlist folder from your player:\n')
-
     # Mac directories
     # pc_dir = '/Users/jsobi/Python/Music_Synchronizer/Disk1/Playlist'
     # player_dir = '/Users/jsobi/Python/Music_Synchronizer/Disk2/Playlist'
@@ -17,6 +13,9 @@ def main():
     # Linux directories
     pc_dir = '/home/greezye/Greezye/TEST/Disk1/Playlist'
     player_dir = '/home/greezye/Greezye/TEST/Disk2/Playlist'
+
+    pc_dir, player_dir = login()
+    cls()
 
     pc_playlist = Playlist(pc_dir)
 

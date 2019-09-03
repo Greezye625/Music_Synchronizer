@@ -1,9 +1,9 @@
 from Playlist import Playlist
 import os
 from Location import Location
-from common_functions import (get_parent_directory,
-                              copy_folder,
-                              copy_file)
+from functions import (get_parent_directory,
+                       copy_folder,
+                       copy_file)
 
 
 def check_tree_up_for_non_existent_folder(pc_playlist: Playlist, player_playlist: Playlist, checked_folder: str):

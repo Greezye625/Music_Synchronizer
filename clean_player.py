@@ -1,10 +1,10 @@
 from Playlist import Playlist
 import os
 from Location import Location
-from common_functions import (get_parent_directory,
-                              remove_file,
-                              remove_folder,
-                              get_number_of_children)
+from functions import (get_parent_directory,
+                       remove_file,
+                       remove_folder,
+                       get_number_of_children)
 
 
 def delete_files_not_in_pc_playlist(player_folder: Location, pc_playlist: Playlist):

@@ -1,5 +1,5 @@
-from common_functions import (get_parent_directory,
-                              get_relative_path)
+from functions import (get_parent_directory,
+                       get_relative_path)
 
 
 class Location:
