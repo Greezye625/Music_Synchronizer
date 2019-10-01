@@ -17,7 +17,7 @@ def main():
 
     clean_player_folders(pc_playlist, player_playlist)
 
-    cls()
+    print('\n\n')
 
     print("----------------SYNCING PLAYLIST----------------")
 

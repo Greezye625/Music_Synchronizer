@@ -8,7 +8,7 @@ from sexy_fun import (get_script_location,
 
 def login():
     pc_dir = ''
-    pattern = re.compile(r"({}\w+)+".format(os.path.sep))
+    pattern = re.compile(r"({separator}\w+)+".format(separator=os.path.sep))
     try:
         with open(os.path.join(get_script_location(), 'Pc_Playlist_Location.txt'), mode='r')as file:
             pc_dir = file.read()
