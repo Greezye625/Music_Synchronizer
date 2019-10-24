@@ -1,5 +1,6 @@
 from Playlist import Playlist
 import os
+import filecmp
 from Location import Location
 from functions import (get_parent_directory,
                        remove_file,
@@ -23,16 +24,24 @@ def delete_files_not_in_pc_playlist(player_folder: Location, pc_playlist: Playli
     pc_curr_folder_song_list = []
 
     # creating list of songs in PC twin of currently investigated Player folder
-    for _, _, pc_files in os.walk(os.path.join(pc_playlist.directory, player_folder.relative_path)):
-        for name in pc_files:
+    for _, _, pc_file_names in os.walk(os.path.join(pc_playlist.directory, player_folder.relative_path)):
+        for name in pc_file_names:
             pc_curr_folder_song_list.append(name)
 
     # checking and deleting file from currently investigated PLAYER folder,
     # if it's not in corresponding PC folder
-    for root, _, files in os.walk(player_folder.full_path):
-        for name in files:
+    for root, _, file_names in os.walk(player_folder.full_path):
+        for name in file_names:
+
+            player_file = os.path.join(root, name)
+
             if name not in pc_curr_folder_song_list:
-                remove_file(os.path.join(root, name))
+                remove_file(player_file)
+
+            else:
+                pc_file = os.path.join(pc_playlist.directory, name)
+                if not filecmp.cmp(player_file, pc_file):
+                    remove_file(player_file)
 
 
 def check_upper_folder(checked_folder: str, player_playlist: Playlist):
