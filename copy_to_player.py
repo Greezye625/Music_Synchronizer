@@ -1,8 +1,7 @@
 from Playlist import Playlist
 import os
 from Location import Location
-from functions import (get_parent_directory,
-                       copy_folder,
+from functions import (copy_folder,
                        copy_file)
 
 
@@ -25,15 +24,15 @@ def check_tree_up_for_non_existent_folder(pc_playlist: Playlist, player_playlist
     :return:
     """
 
-    parent = get_parent_directory(checked_folder)
+    parent = os.path.dirname(checked_folder)
 
     # if parent exist -> copying folders into parent
     if os.path.isdir(os.path.join(player_playlist.directory, parent)):
 
         pc_folder = Location(full_path=os.path.join(pc_playlist.directory, checked_folder),
-                             main_directory=pc_playlist.directory)
+                             path_relative_to_playlist_location=pc_playlist.directory)
         player_folder = Location(full_path=os.path.join(player_playlist.directory, checked_folder),
-                                 main_directory=player_playlist.directory)
+                                 path_relative_to_playlist_location=player_playlist.directory)
 
         copy_folder(source_folder=pc_folder,
                     destination_folder=player_folder)
@@ -58,13 +57,13 @@ def copy_folders_not_on_player(pc_folder: Location, pc_playlist: Playlist, playe
     :return:
     """
 
-    relative_parent = get_parent_directory(pc_folder.relative_path)
+    relative_parent = os.path.dirname(pc_folder.path_relative_to_playlsit_location)
 
     # if parent of checked folder exists on player -> copying files into it
     if os.path.isdir(os.path.join(player_playlist.directory, relative_parent)):
 
-        player_folder = Location(full_path=os.path.join(player_playlist.directory, pc_folder.relative_path),
-                                 main_directory=player_playlist.directory)
+        player_folder = Location(full_path=os.path.join(player_playlist.directory, pc_folder.path_relative_to_playlsit_location),
+                                 path_relative_to_playlist_location=player_playlist.directory)
 
         copy_folder(source_folder=pc_folder,
                     destination_folder=player_folder)
@@ -89,7 +88,7 @@ def copy_files_not_on_player(pc_folder: Location, player_playlist: Playlist):
     player_curr_folder_song_list = []
 
     # creating list of songs in Player twin of currently investigated PC Playlist folder
-    pc_folder_path = os.path.join(player_playlist.directory, pc_folder.relative_path)
+    pc_folder_path = os.path.join(player_playlist.directory, pc_folder.path_relative_to_playlsit_location)
     for _, _, player_file_names in os.walk(pc_folder_path):
         for name in player_file_names:
 
@@ -102,8 +101,8 @@ def copy_files_not_on_player(pc_folder: Location, player_playlist: Playlist):
             if name not in player_curr_folder_song_list:
 
                 player_folder = Location(full_path=os.path.join(player_playlist.directory,
-                                                                pc_folder.relative_path),
-                                         main_directory=player_playlist.directory)
+                                                                pc_folder.path_relative_to_playlsit_location),
+                                         path_relative_to_playlist_location=player_playlist.directory)
 
                 copy_file(source_file=pc_file,
                           destination_folder=player_folder)

@@ -7,7 +7,7 @@ from sexy_fun import cls
 
 def main():
     pc_dir, player_dir = login()
-    cls()
+    # cls()
 
     pc_playlist = Playlist(pc_dir)
 
@@ -24,7 +24,7 @@ def main():
     copy_music_to_player(pc_playlist=pc_playlist,
                          player_playlist=player_playlist)
 
-    cls()
+    # cls()
 
 
 if __name__ == '__main__':

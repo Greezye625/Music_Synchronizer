@@ -8,7 +8,7 @@ from sexy_fun import (get_script_location,
 
 def login():
     pc_dir = ''
-    pattern = re.compile(r"({separator}[a-zA-Z[()0-9._ \-\]]+)+".format(separator=os.path.sep))
+    pattern = re.compile(r"({separator}[a-zA-Z[()0-9.%,_ \-\]]+)+".format(separator=os.path.sep))
     try:
         with open(os.path.join(get_script_location(), 'Pc_Playlist_Location.txt'), mode='r')as file:
             pc_dir = file.read()
@@ -34,21 +34,11 @@ def login():
     return pc_dir, player_dir
 
 
-def get_parent_directory(path: str):
-    head, _ = os.path.split(path)
-    return head
-
-
-def get_relative_path(path: str, main_directory):
+def get_path_relative_to_directory(path: str, directory: str):
     try:
-        return path[len(main_directory) + 1:]
+        return path[len(directory) + 1:]
     except TypeError:
         pass
-
-
-def get_name(folder: str):
-    _, tail = os.path.split(folder)
-    return tail
 
 
 def copy_folder(source_folder: Location, destination_folder: Location):
@@ -60,7 +50,7 @@ def copy_file(source_file, destination_folder):
     shutil.copy2(source_file,
                  destination_folder.full_path)
 
-    print(f"SYNCED {get_name(source_file)}")
+    print(f"SYNCED {os.path.basename(source_file)}")
 
 
 def remove_folder(destination_folder: Location):
@@ -70,7 +60,7 @@ def remove_folder(destination_folder: Location):
 
 def remove_file(destination_file):
     os.remove(destination_file)
-    print(f"REMOVED {get_name(destination_file)}")
+    print(f"REMOVED {os.path.basename(destination_file)}")
 
 
 def get_number_of_children(directory):

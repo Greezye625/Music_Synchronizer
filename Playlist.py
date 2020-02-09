@@ -1,5 +1,6 @@
 import os
 from Location import Location
+from functions import get_path_relative_to_directory
 
 
 class Playlist:
@@ -8,7 +9,6 @@ class Playlist:
     """
 
     def __init__(self, directory=''):
-
         self.directory = directory
         self.locations_list = []
 
@@ -24,7 +24,7 @@ class Playlist:
         """
 
         for root, dirs, files in os.walk(self.directory):  # searching tree with root in 'directory'
-            for name in dirs:  # creating list of folders and subfolders
+            for name in dirs:                              # creating list of folders and subfolders
                 self.locations_list.append(os.path.join(root, name))
 
         self.locations_list.sort()
@@ -40,8 +40,8 @@ class Playlist:
             if self.locations_list[index + 1].startswith(self.locations_list[index]):
                 self.locations_list[index] = 'clear'
 
-        self.locations_list = list(
-                (filter(lambda element: element != 'clear', self.locations_list)))  # erasing marked positions
+        # erasing marked positions
+        self.locations_list = list((filter(lambda element: element != 'clear', self.locations_list)))
 
         self.locations_list = list(Location(full_path=item,
-                                            main_directory=self.directory) for item in self.locations_list)
+                                            path_relative_to_playlist_location=get_path_relative_to_directory(item, self.directory)) for item in self.locations_list)

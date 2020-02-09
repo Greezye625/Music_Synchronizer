@@ -1,5 +1,5 @@
-from functions import (get_parent_directory,
-                       get_relative_path)
+from functions import get_path_relative_to_directory
+import os
 
 
 class Location:
@@ -7,7 +7,10 @@ class Location:
 
     """
 
-    def __init__(self, full_path, main_directory):
+    def __init__(self, full_path, path_relative_to_playlist_location):
         self.full_path = full_path
-        self.relative_path = get_relative_path(full_path, main_directory)
-        self.parent_directory = get_parent_directory(full_path)
+        self.path_relative_to_playlsit_location = path_relative_to_playlist_location
+        # self.parent_directory = os.path.dirname(full_path)
+
+    def get_parent(self):
+        return os.path.dirname(self.full_path)

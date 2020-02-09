@@ -2,8 +2,7 @@ from Playlist import Playlist
 import os
 import filecmp
 from Location import Location
-from functions import (get_parent_directory,
-                       remove_file,
+from functions import (remove_file,
                        remove_folder,
                        get_number_of_children)
 
@@ -24,7 +23,7 @@ def delete_files_not_in_pc_playlist(player_folder: Location, pc_playlist: Playli
     pc_curr_folder_song_list = []
 
     # creating list of songs in PC twin of currently investigated Player folder
-    for _, _, pc_file_names in os.walk(os.path.join(pc_playlist.directory, player_folder.relative_path)):
+    for _, _, pc_file_names in os.walk(os.path.join(pc_playlist.directory, player_folder.path_relative_to_playlsit_location)):
         for name in pc_file_names:
             pc_curr_folder_song_list.append(name)
 
@@ -39,7 +38,7 @@ def delete_files_not_in_pc_playlist(player_folder: Location, pc_playlist: Playli
                 remove_file(player_file)
 
             else:
-                pc_file = os.path.join(pc_playlist.directory, name)
+                pc_file = os.path.join(pc_playlist.directory, player_folder.path_relative_to_playlsit_location, name)
                 if not filecmp.cmp(player_file, pc_file):
                     remove_file(player_file)
 
@@ -70,9 +69,10 @@ def check_upper_folder(checked_folder: str, player_playlist: Playlist):
     :return:
     """
 
-    parent = get_parent_directory(checked_folder)
+    parent = os.path.dirname(checked_folder)
 
-    children_size = get_number_of_children(parent)
+    # children_size = get_number_of_children(parent)
+    children_size = os.listdir(parent)
 
     if children_size == 1:
         check_upper_folder(checked_folder=parent,
@@ -81,7 +81,7 @@ def check_upper_folder(checked_folder: str, player_playlist: Playlist):
         raise Exception(f'directories not found in {parent}')
     else:
         folder_to_delete = Location(full_path=checked_folder,
-                                    main_directory=player_playlist.directory)
+                                    path_relative_to_playlist_location=player_playlist.directory)
         remove_folder(folder_to_delete)
 
 
@@ -99,7 +99,8 @@ def delete_folders_not_in_pc_playlist(player_folder: Location, player_playlist: 
     if player_folder is None:
         raise Exception('arg not delivered to delete_folders_not_in_pc_playlist function in clean_player.py')
 
-    children_size = get_number_of_children(player_folder.parent_directory)
+    # children_size = get_number_of_children(player_folder.parent_directory)
+    children_size = os.listdir(player_folder.get_parent())
 
     """
     if parent of the folder has only one directory in it, then it's folder we're about to delete,
@@ -108,10 +109,10 @@ def delete_folders_not_in_pc_playlist(player_folder: Location, player_playlist: 
     """
 
     if children_size == 1:
-        check_upper_folder(checked_folder=player_folder.parent_directory,
+        check_upper_folder(checked_folder=player_folder.get_parent(),
                            player_playlist=player_playlist)
     elif children_size == 0:
-        raise Exception(f'directories not found in {player_folder.parent_directory}')
+        raise Exception(f'directories not found in {player_folder.get_parent()}')
     else:
         remove_folder(player_folder)
 
